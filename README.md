@@ -34,13 +34,12 @@ RetroAssembly is an **upstream third-party project**, not maintained by bmartino
 | App | Source | Docker image | Notes |
 | --- | --- | --- | --- |
 | [Time Machine (Samba)](Apps/timemachine/docker-compose.yml) | [upstream](https://github.com/mbentley/docker-timemachine) | `mbentley/timemachine:smb` | Apple Time Machine backups via Samba |
-| [Samba File Sharing](Apps/samba/docker-compose.yml) | [upstream](https://github.com/dperson/samba) | `dperson/samba:latest` | Windows, macOS and Linux SMB shares |
 | [NFS File Sharing](Apps/nfs-server/docker-compose.yml) | [upstream](https://hub.docker.com/r/itsthenetwork/nfs-server-alpine) | `itsthenetwork/nfs-server-alpine:latest` | Export a host folder over NFSv4 |
 | [Bitcoin Knots GUI](Apps/bitcoin-knots-gui/docker-compose.yml) | [upstream](https://hub.docker.com/r/bmmbmm01/bitcoin-knots-gui) | `bmmbmm01/bitcoin-knots-gui:latest` | Bitcoin Knots wallet and node desktop |
 
-**SMB port conflicts:** Time Machine and generic Samba both need TCP 445 and ordinarily cannot run simultaneously using the same host IP and ports. Install one or assign a separate IP/network interface (requires host-specific configuration beyond the store templates). CasaOS itself or the host may already use SMB ports. Time Machine bridge networking may require manual Finder connection; Avahi auto-discovery is not guaranteed. Change the credentials in both SMB definitions before installing.
+**Time Machine SMB port conflict:** CasaOS or the host may already provide native Samba services on TCP 445 and related SMB ports. Time Machine requires these ports by default and may need a separate host IP/network configuration when the built-in Samba service is active. Bridge networking may require a manual Finder connection; Avahi auto-discovery is not guaranteed. Replace the Time Machine password before installing. Use CasaOS's integrated Samba service for generic file sharing.
 
-**NFS caution:** NFS requires privileged operation and kernel NFS support. Change the example client CIDR before starting; default export is read-only. Restrict access to a trusted LAN/VPN, never expose NFS/SMB on the internet.
+**NFS stays in this store:** CasaOS does not yet provide the desired integrated NFS workflow for this use case. **NFS caution:** NFS requires privileged operation and kernel NFS support. Change the example client CIDR before starting; default export is read-only. Restrict access to a trusted LAN/VPN, never expose NFS/SMB on the internet.
 
 **Bitcoin caution:** The requested `bmmbmm01/bitcoin-knots-gui` image is **marked archived** on Docker Hub. This is provided for compatibility rather than represented as a maintained, security-updated image. Web VNC is on port 5800 and wallet/blockchain files persist at `/config/.bitcoin`. Keep it off public networks and back up the wallet. The legacy `AUTOUPDATE` toggle may be necessary on initial installation; consult the Docker Hub image instructions.
 
