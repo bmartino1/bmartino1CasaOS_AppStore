@@ -1,0 +1,120 @@
+name: bmartino1-timemachine
+services:
+  app:
+    image: "mbentley/timemachine:smb"
+    restart: unless-stopped
+    hostname: timemachine
+    ports:
+      - "137:137/udp"
+      - "138:138/udp"
+      - "139:139/tcp"
+      - "445:445/tcp"
+    volumes:
+      - "/DATA/Backups/TimeMachine:/opt/timemachine:rw"
+    environment:
+      TM_USERNAME: "timemachine"
+      TM_GROUPNAME: "timemachine"
+      PASSWORD: "CHANGE_TO_UNIQUE_PASSWORD"
+      TM_UID: "1000"
+      TM_GID: "1000"
+      SET_PERMISSIONS: "false"
+      VOLUME_SIZE_LIMIT: "0"
+      SHARE_NAME: "TimeMachine"
+      SMB_PORT: "445"
+      WORKGROUP: "WORKGROUP"
+      TM_ENABLED: "yes"
+      CUSTOM_SMB_PROTO: "SMB2"
+      EXTRA_SHARES: ""
+      HIDE_SHARES: "no"
+      DEBUG_LEVEL: "1"
+    tmpfs:
+      - /run/samba
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    x-casaos:
+      envs:
+        - container: "TM_USERNAME"
+          description:
+            en_US: "If changed, also change mount target /opt/timemachine to /opt/<username>."
+        - container: "TM_GROUPNAME"
+          description:
+            en_US: "Configure TM_GROUPNAME using the upstream documentation"
+        - container: "PASSWORD"
+          description:
+            en_US: "REQUIRED: Replace placeholder with a unique strong password before installation."
+        - container: "TM_UID"
+          description:
+            en_US: "Configure TM_UID using the upstream documentation"
+        - container: "TM_GID"
+          description:
+            en_US: "Configure TM_GID using the upstream documentation"
+        - container: "SET_PERMISSIONS"
+          description:
+            en_US: "Configure SET_PERMISSIONS using the upstream documentation"
+        - container: "VOLUME_SIZE_LIMIT"
+          description:
+            en_US: "Time Machine share limit, MiB; zero unlimited."
+        - container: "SHARE_NAME"
+          description:
+            en_US: "Configure SHARE_NAME using the upstream documentation"
+        - container: "SMB_PORT"
+          description:
+            en_US: "Configure SMB_PORT using the upstream documentation"
+        - container: "WORKGROUP"
+          description:
+            en_US: "Configure WORKGROUP using the upstream documentation"
+        - container: "TM_ENABLED"
+          description:
+            en_US: "Configure TM_ENABLED using the upstream documentation"
+        - container: "CUSTOM_SMB_PROTO"
+          description:
+            en_US: "Configure CUSTOM_SMB_PROTO using the upstream documentation"
+        - container: "EXTRA_SHARES"
+          description:
+            en_US: "Optional name:/path additional shares; mount each directory first."
+        - container: "HIDE_SHARES"
+          description:
+            en_US: "Configure HIDE_SHARES using the upstream documentation"
+        - container: "DEBUG_LEVEL"
+          description:
+            en_US: "Configure DEBUG_LEVEL using the upstream documentation"
+      ports:
+        - container: "137"
+          description:
+            en_US: "NetBIOS name service"
+        - container: "138"
+          description:
+            en_US: "NetBIOS datagrams"
+        - container: "139"
+          description:
+            en_US: "Legacy SMB session"
+        - container: "445"
+          description:
+            en_US: "SMB service"
+      volumes:
+        - container: "/opt/timemachine"
+          description:
+            en_US: "Host path /DATA/Backups/TimeMachine; rw mount"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.timemachine"
+  title:
+    en_US: "Time Machine (Samba)"
+  description:
+    en_US: "SMB Apple Time Machine network backup target with persistent storage and configurable quota. Upstream: https://github.com/mbentley/docker-timemachine"
+  tagline:
+    en_US: "Apple Time Machine backups via Samba"
+  developer: "mbentley"
+  author: "bmartino1"
+  version: "latest"
+  icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/apple.png"
+  thumbnail: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/apple.png"
+  category: "Networking"
+  tips:
+    before_install:
+      en_US: "Requires backing filesystem with xattr support. Bridge networking does not automatically broadcast Avahi discovery; connect manually to smb://HOST/TimeMachine. Do not enable host network if CasaOS already uses Samba/Avahi. Ports 137/138/139/445 may conflict with other SMB apps. Change PASSWORD before launch. Project documentation: https://github.com/mbentley/docker-timemachine"

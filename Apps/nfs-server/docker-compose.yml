@@ -1,0 +1,58 @@
+name: bmartino1-nfs-server
+services:
+  app:
+    image: "itsthenetwork/nfs-server-alpine:latest"
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - "2049:2049/tcp"
+    volumes:
+      - "/DATA/Shared/NFS:/nfsshare:rw"
+    environment:
+      SHARED_DIRECTORY: "/nfsshare"
+      PERMITTED: "192.168.1.0/24"
+      READ_ONLY: "true"
+      SYNC: "sync"
+    x-casaos:
+      envs:
+        - container: "SHARED_DIRECTORY"
+          description:
+            en_US: "Configure SHARED_DIRECTORY using the upstream documentation"
+        - container: "PERMITTED"
+          description:
+            en_US: "IMPORTANT: replace example 192.168.1.0/24 with your trusted client CIDR before installation."
+        - container: "READ_ONLY"
+          description:
+            en_US: "Set false only when authenticated network isolation and permissions are carefully configured."
+        - container: "SYNC"
+          description:
+            en_US: "NFS write synchronization option."
+      ports:
+        - container: "2049"
+          description:
+            en_US: "NFSv4 TCP"
+      volumes:
+        - container: "/nfsshare"
+          description:
+            en_US: "Host path /DATA/Shared/NFS; rw mount"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.nfs-server"
+  title:
+    en_US: "NFS File Sharing"
+  description:
+    en_US: "NFSv4 network file sharing backed by a selected host directory. Requires elevated container privileges. Upstream: https://hub.docker.com/r/itsthenetwork/nfs-server-alpine"
+  tagline:
+    en_US: "Export a host folder over NFSv4"
+  developer: "itsthenetwork"
+  author: "bmartino1"
+  version: "latest"
+  icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/nfs.png"
+  thumbnail: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/nfs.png"
+  category: "Networking"
+  tips:
+    before_install:
+      en_US: "SECURITY: privileged NFS container; for trusted LAN/VPN only. Adjust PERMITTED CIDR, check Linux nfsd host kernel support, existing host NFS services and storage permissions. Read-only by default. NFS shares are not SMB shares. Project documentation: https://hub.docker.com/r/itsthenetwork/nfs-server-alpine"

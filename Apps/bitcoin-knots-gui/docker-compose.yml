@@ -1,0 +1,60 @@
+name: bmartino1-bitcoin-knots-gui
+services:
+  app:
+    image: "bmmbmm01/bitcoin-knots-gui:latest"
+    restart: unless-stopped
+    ports:
+      - "5800:5800/tcp"
+    volumes:
+      - "/DATA/AppData/bitcoin-knots-gui:/config:rw"
+    environment:
+      AUTOUPDATE: "false"
+      TZ: "America/Chicago"
+      DISPLAY_WIDTH: "1280"
+      DISPLAY_HEIGHT: "800"
+    x-casaos:
+      envs:
+        - container: "AUTOUPDATE"
+          description:
+            en_US: "Legacy image update toggle; first boot may require true for initial /config provisioning. Verify before enabling auto-updates."
+        - container: "TZ"
+          description:
+            en_US: "Configure TZ using the upstream documentation"
+        - container: "DISPLAY_WIDTH"
+          description:
+            en_US: "Configure DISPLAY_WIDTH using the upstream documentation"
+        - container: "DISPLAY_HEIGHT"
+          description:
+            en_US: "Configure DISPLAY_HEIGHT using the upstream documentation"
+      ports:
+        - container: "5800"
+          description:
+            en_US: "Web VNC interface"
+      volumes:
+        - container: "/config"
+          description:
+            en_US: "Host path /DATA/AppData/bitcoin-knots-gui; rw mount"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.bitcoin-knots-gui"
+  title:
+    en_US: "Bitcoin Knots GUI"
+  description:
+    en_US: "Browser-accessible Bitcoin Knots desktop GUI via VNC; persist blockchain and wallet files under /config. Upstream: https://hub.docker.com/r/bmmbmm01/bitcoin-knots-gui"
+  tagline:
+    en_US: "Bitcoin Knots wallet and node desktop"
+  developer: "bmartino1"
+  author: "bmartino1"
+  version: "latest"
+  icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/bitcoin.png"
+  thumbnail: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/bitcoin.png"
+  category: "Networking"
+  tips:
+    before_install:
+      en_US: "Docker Hub marks this image archived/no further updates. Do not expose its VNC UI or wallet to the internet. Back up /config/.bitcoin and wallet before updates. On first startup choose persistent data location /config/.bitcoin and ensure /DATA/AppData/bitcoin-knots-gui exists. First-run AUTOUPDATE behavior depends on image version. Project documentation: https://hub.docker.com/r/bmmbmm01/bitcoin-knots-gui"
+  port_map: "5800"
+  scheme: http
+  index: /

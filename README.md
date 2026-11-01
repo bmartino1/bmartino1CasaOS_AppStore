@@ -27,6 +27,21 @@ The ZIP source contains multiple `Apps/<app>/docker-compose.yml` definitions; **
 
 RetroAssembly is an **upstream third-party project**, not maintained by bmartino1. Refer to the [upstream Docker self-hosting documentation](https://github.com/arianrhodsandlot/retroassembly#option-2-self-host-with-docker) for any settings beyond the simple Unraid template.
 
+## Additional file sharing and Bitcoin GUI apps
+
+| App | Source | Docker image | Notes |
+| --- | --- | --- | --- |
+| [Time Machine (Samba)](Apps/timemachine/docker-compose.yml) | [upstream](https://github.com/mbentley/docker-timemachine) | `mbentley/timemachine:smb` | Apple Time Machine backups via Samba |
+| [Samba File Sharing](Apps/samba/docker-compose.yml) | [upstream](https://github.com/dperson/samba) | `dperson/samba:latest` | Windows, macOS and Linux SMB shares |
+| [NFS File Sharing](Apps/nfs-server/docker-compose.yml) | [upstream](https://hub.docker.com/r/itsthenetwork/nfs-server-alpine) | `itsthenetwork/nfs-server-alpine:latest` | Export a host folder over NFSv4 |
+| [Bitcoin Knots GUI](Apps/bitcoin-knots-gui/docker-compose.yml) | [upstream](https://hub.docker.com/r/bmmbmm01/bitcoin-knots-gui) | `bmmbmm01/bitcoin-knots-gui:latest` | Bitcoin Knots wallet and node desktop |
+
+**SMB port conflicts:** Time Machine and generic Samba both need TCP 445 and ordinarily cannot run simultaneously using the same host IP and ports. Install one or assign a separate IP/network interface (requires host-specific configuration beyond the store templates). CasaOS itself or the host may already use SMB ports. Time Machine bridge networking may require manual Finder connection; Avahi auto-discovery is not guaranteed. Change the credentials in both SMB definitions before installing.
+
+**NFS caution:** NFS requires privileged operation and kernel NFS support. Change the example client CIDR before starting; default export is read-only. Restrict access to a trusted LAN/VPN, never expose NFS/SMB on the internet.
+
+**Bitcoin caution:** The requested `bmmbmm01/bitcoin-knots-gui` image is **marked archived** on Docker Hub. This is provided for compatibility rather than represented as a maintained, security-updated image. Web VNC is on port 5800 and wallet/blockchain files persist at `/config/.bitcoin`. Keep it off public networks and back up the wallet. The legacy `AUTOUPDATE` toggle may be necessary on initial installation; consult the Docker Hub image instructions.
+
 ## Configuration, paths, and safety
 
 - The example host paths use CasaOS-style `/DATA/AppData/<app>` rather than Unraid's `/mnt/user/appdata/<app>`. Adjust them for your host **before installation**, especially the scan target and SFTP shared directory.
@@ -41,7 +56,7 @@ The CasaOS application definitions include `x-casaos` metadata and supported ext
 
 ## Validation status
 
-Source definitions have been cross-referenced with upstream project documentation and Unraid templates. **An actual CasaOS App Store ZIP import, image architecture compatibility, and installation on a target host have not yet been tested.** Review all settings before enabling applications. The project is independent from the official CasaOS App Store and does not claim official support.
+The original six applications were confirmed present and functional by a CasaOS installation test. The four additions above have not yet undergone CasaOS installation/runtime testing. Source definitions have been cross-referenced with upstream project documentation and Unraid templates. **An actual CasaOS App Store ZIP import, image architecture compatibility, and installation on a target host have not yet been tested.** Review all settings before enabling applications. The project is independent from the official CasaOS App Store and does not claim official support.
 
 
 ## CasaOS import troubleshooting
