@@ -50,6 +50,16 @@ RetroAssembly is an **upstream third-party project**, not maintained by bmartino
 
 The portable default uses a private Docker bridge (AdGuard `172.30.53.3`, Unbound `172.30.53.2`) instead of requiring a pre-existing macvlan `br0`. The installer must select Unbound `172.30.53.2` as AdGuard's upstream during initial configuration; Compose cannot safely initialize the entire interactive AdGuard profile. Verify port 53 availability and that the internal subnet does not conflict before installation. No private LAN DNS rewrite records are imported by default.
 
+## MakeMKV — optional optical drive passthrough
+
+| App | Source | Container | Defaults |
+| --- | --- | --- | --- |
+| [MakeMKV](Apps/makemkv/docker-compose.yml) | [jlesage/docker-makemkv](https://github.com/jlesage/docker-makemkv) | `jlesage/makemkv:latest` | Browser UI on host 7806, optional VNC 7906, persistent /config and /output; **no optical drive is mapped initially**. |
+
+MakeMKV installs without predefined `/dev/srX` or `/dev/sgY` device mappings. The web interface can start without a disc drive. To enable ripping, identify the actual optical drive pair on the Docker host with `lsscsi -g`, then **edit the CasaOS Compose definition** to add just those devices and recreate the container. On PVE/LXC/VM hosts, pass the optical device(s) through to the CasaOS guest before doing so. A sample `devices:` section is commented out in the app Compose. Avoid blindly mapping all `/dev/sg*` devices. No privileged mode or disabled seccomp/AppArmor profiles are enabled by default.
+
+No registration key from personal deployments is committed; `MAKEMKV_KEY=BETA` is used instead, subject to upstream beta availability. Automatic ripping is initially disabled (`AUTO_DISC_RIPPER=0`) until a drive is deliberately configured. HTTP and VNC are unencrypted and unauthenticated by default: restrict LAN/VPN access or configure upstream TLS and authentication before broader use. Only process media you are authorized to copy.
+
 ## Configuration, paths, and safety
 
 - The example host paths use CasaOS-style `/DATA/AppData/<app>` rather than Unraid's `/mnt/user/appdata/<app>`. Adjust them for your host **before installation**, especially the scan target and SFTP shared directory.

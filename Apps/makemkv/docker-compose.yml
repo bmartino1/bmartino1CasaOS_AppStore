@@ -1,0 +1,200 @@
+name: bmartino1-makemkv
+services:
+  app:
+    image: jlesage/makemkv:latest
+    restart: unless-stopped
+    mem_reservation: 2g
+    mem_limit: 6g
+    memswap_limit: 8g
+    pids_limit: 2048
+    shm_size: 2gb
+    ports:
+      - "7806:5800/tcp"
+      - "7906:5900/tcp"
+    volumes:
+      - "/DATA/AppData/makemkv/config:/config:rw"
+      - "/DATA/Media:/storage:ro"
+      - "/DATA/Media/MakeMKV:/output:rw"
+    # No optical devices are mapped on first installation.
+    # After discovering the correct optical device pair on the Docker host,
+    # edit this app's Compose in CasaOS, uncomment and adjust the lines:
+    # devices:
+    #   - /dev/sr0:/dev/sr0
+    #   - /dev/sg2:/dev/sg2
+    # Do NOT guess sg numbers or map all /dev/sg* devices.
+    # If running CasaOS in LXC/VM, both devices must first be passed through.
+    environment:
+      TZ: "America/Chicago"
+      MAKEMKV_KEY: "BETA"
+      MAKEMKV_GUI: "1"
+      AUTO_DISC_RIPPER: "0"
+      AUTO_DISC_RIPPER_EJECT: "0"
+      AUTO_DISC_RIPPER_PARALLEL_RIP: "0"
+      AUTO_DISC_RIPPER_BD_MODE: "mkv"
+      AUTO_DISC_RIPPER_DVD_MODE: "mkv"
+      AUTO_DISC_RIPPER_FORCE_UNIQUE_OUTPUT_DIR: "0"
+      AUTO_DISC_RIPPER_NO_GUI_PROGRESS: "0"
+      AUTO_DISC_RIPPER_INTERVAL: "5"
+      AUTO_DISC_RIPPER_MIN_TITLE_LENGTH: ""
+      USER_ID: "1000"
+      GROUP_ID: "1000"
+      APP_NICENESS: "0"
+      DISPLAY_WIDTH: "1920"
+      DISPLAY_HEIGHT: "1080"
+      DARK_MODE: "1"
+      WEB_AUDIO: "0"
+      WEB_FILE_MANAGER: "0"
+      WEB_FILE_MANAGER_ALLOWED_PATHS: "AUTO"
+      WEB_FILE_MANAGER_DENIED_PATHS: ""
+      WEB_NOTIFICATION: "0"
+      WEB_AUTHENTICATION: "0"
+      WEB_AUTHENTICATION_TOKEN_VALIDITY_TIME: "24"
+      WEB_AUTHENTICATION_USERNAME: ""
+      WEB_AUTHENTICATION_PASSWORD: ""
+      SECURE_CONNECTION: "0"
+      SECURE_CONNECTION_VNC_METHOD: "SSL"
+      SECURE_CONNECTION_CERTS_CHECK_INTERVAL: "60"
+      WEB_LISTENING_PORT: "5800"
+      VNC_LISTENING_PORT: "5900"
+    # Optional: see upstream docs for secure web authentication, HTTPS and
+    # tighter access. This store does not enable privileged mode or disable
+    # AppArmor/seccomp. Optical devices normally work via explicit devices.
+    x-casaos:
+      ports:
+        - container: "5800"
+          description:
+            en_US: "Web GUI on host TCP 7806; keep restricted to trusted LAN/VPN"
+        - container: "5900"
+          description:
+            en_US: "Optional VNC on host TCP 7906; restrict network access"
+      volumes:
+        - container: "/config"
+          description:
+            en_US: "Persistent MakeMKV configuration, settings and beta registration state"
+        - container: "/storage"
+          description:
+            en_US: "Read-only access to existing media files"
+        - container: "/output"
+          description:
+            en_US: "Writable destination for extracted MKV files"
+      envs:
+        - container: "TZ"
+          description:
+            en_US: "Time zone"
+        - container: "MAKEMKV_KEY"
+          description:
+            en_US: "BETA retrieves upstream current beta key when available. Do not publish private paid registration keys."
+        - container: "MAKEMKV_GUI"
+          description:
+            en_US: "Enable browser MakeMKV GUI"
+        - container: "AUTO_DISC_RIPPER"
+          description:
+            en_US: "Initially disabled while no device is assigned; 1 enables automatic ripping after device setup"
+        - container: "AUTO_DISC_RIPPER_EJECT"
+          description:
+            en_US: "1 ejects disc when automatic ripping finishes"
+        - container: "AUTO_DISC_RIPPER_PARALLEL_RIP"
+          description:
+            en_US: "1 permits simultaneous ripping across drives"
+        - container: "AUTO_DISC_RIPPER_BD_MODE"
+          description:
+            en_US: "Blu-ray mode, mkv or backup"
+        - container: "AUTO_DISC_RIPPER_DVD_MODE"
+          description:
+            en_US: "DVD mode, mkv or backup"
+        - container: "AUTO_DISC_RIPPER_FORCE_UNIQUE_OUTPUT_DIR"
+          description:
+            en_US: "1 always creates a unique output directory"
+        - container: "AUTO_DISC_RIPPER_NO_GUI_PROGRESS"
+          description:
+            en_US: "1 hides automatic rip progress from GUI"
+        - container: "AUTO_DISC_RIPPER_INTERVAL"
+          description:
+            en_US: "Disc polling interval, seconds"
+        - container: "AUTO_DISC_RIPPER_MIN_TITLE_LENGTH"
+          description:
+            en_US: "Minimum title length in seconds; blank uses MakeMKV defaults"
+        - container: "USER_ID"
+          description:
+            en_US: "UID used for persistent file permissions"
+        - container: "GROUP_ID"
+          description:
+            en_US: "GID used for persistent file permissions"
+        - container: "APP_NICENESS"
+          description:
+            en_US: "Process priority adjustment"
+        - container: "DISPLAY_WIDTH"
+          description:
+            en_US: "Browser desktop width"
+        - container: "DISPLAY_HEIGHT"
+          description:
+            en_US: "Browser desktop height"
+        - container: "DARK_MODE"
+          description:
+            en_US: "1 enables dark mode"
+        - container: "WEB_AUDIO"
+          description:
+            en_US: "1 enables browser audio"
+        - container: "WEB_FILE_MANAGER"
+          description:
+            en_US: "1 enables browser file manager"
+        - container: "WEB_FILE_MANAGER_ALLOWED_PATHS"
+          description:
+            en_US: "Accessible file manager paths when enabled"
+        - container: "WEB_FILE_MANAGER_DENIED_PATHS"
+          description:
+            en_US: "Excluded file manager paths"
+        - container: "WEB_NOTIFICATION"
+          description:
+            en_US: "1 enables web notifications; requires secure web access"
+        - container: "WEB_AUTHENTICATION"
+          description:
+            en_US: "Requires SECURE_CONNECTION=1 unless configured behind a trusted HTTPS reverse proxy"
+        - container: "WEB_AUTHENTICATION_TOKEN_VALIDITY_TIME"
+          description:
+            en_US: "Browser login token validity in hours"
+        - container: "WEB_AUTHENTICATION_USERNAME"
+          description:
+            en_US: "Optional browser login account"
+        - container: "WEB_AUTHENTICATION_PASSWORD"
+          description:
+            en_US: "Optional browser login password; not included in source"
+        - container: "SECURE_CONNECTION"
+          description:
+            en_US: "1 enables TLS/HTTPS for web and VNC"
+        - container: "SECURE_CONNECTION_VNC_METHOD"
+          description:
+            en_US: "SSL or TLS for secure VNC"
+        - container: "SECURE_CONNECTION_CERTS_CHECK_INTERVAL"
+          description:
+            en_US: "Certificate reload interval seconds"
+        - container: "WEB_LISTENING_PORT"
+          description:
+            en_US: "Internal web GUI port; update Compose port mapping if changed"
+        - container: "VNC_LISTENING_PORT"
+          description:
+            en_US: "Internal VNC port; update Compose port mapping if changed"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.makemkv"
+  title:
+    en_US: "MakeMKV"
+  description:
+    en_US: "Browser-accessible MakeMKV for converting optical discs to MKV, with configurable automatic ripping and optional optical-drive passthrough. Installs with NO host optical devices mapped; add your own sr/sg pair later. Upstream: https://github.com/jlesage/docker-makemkv"
+  tagline:
+    en_US: "Optical disc ripping with optional drive passthrough"
+  developer: "jlesage"
+  author: "bmartino1"
+  version: "latest"
+  icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/makemkv.png"
+  thumbnail: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/makemkv.png"
+  category: "Media"
+  tips:
+    before_install:
+      en_US: "STARTS WITHOUT DISC HARDWARE. Open WebUI at host port 7806. To enable ripping, determine actual host optical drive /dev/srX and matching SCSI generic /dev/sgY (lsscsi -g or logs), edit Compose devices list and recreate container. Docker in VM/LXC needs host-level passthrough first. Never map random /dev/sg devices. Default web/VNC access is not encrypted/authenticated: use a trusted LAN or enable secure connection. No paid MakeMKV key is shipped; MAKEMKV_KEY=BETA uses upstream beta system."
+  port_map: "7806"
+  scheme: http
+  index: /
