@@ -112,7 +112,7 @@ x-casaos:
   developer: "bmartino1"
   version: "latest"
   author: "bmartino1"
-  icon: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/netprobe.png"
+  icon: "https://raw.githubusercontent.com/bmartino1/DockerManger/main/app/public/favicon.png"
   category: "Utilities"
   tips:
     before_install:
