@@ -24,11 +24,6 @@ services:
       TAIL_LOGS: "true"
       CLEAR_LOGS: "false"
       F2B_CONFIG_MODE: "symlink"
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
       AUTO_UPDATE_INTERVAL_HOURS: "0"
       DEFAULT_ADMIN: "true"
       SFTP_USERS: ""
@@ -37,6 +32,11 @@ services:
       DISABLE_IMKLOG: "true"
       MODE: "start"
       MAIL_SERVER: "false"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     x-casaos:
       envs:
         - container: "AUTO_UPDATE_INTERVAL_HOURS"
@@ -74,7 +74,7 @@ services:
             en_US: "Environment setting: LOG_STREAMS"
         - container: "ADMIN_PASS"
           description:
-            en_US: "REQUIRED: Set a unique password before first launch; CHANGE_ME_BEFORE_FIRST_START is a placeholder."
+            en_US: "REQUIRED: Set a unique password before first launch; this value is intentionally blank."
         - container: "PUID"
           description:
             en_US: "Environment setting: PUID"

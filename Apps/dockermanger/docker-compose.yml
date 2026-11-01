@@ -1,0 +1,122 @@
+name: bmartino1-dockermanger
+services:
+  app:
+    image: "bmmbmm01/dockermanger:latest"
+    restart: unless-stopped
+    hostname: dockermanger
+    mem_reservation: 512m
+    mem_limit: 2g
+    memswap_limit: 3g
+    cpu_shares: 1024
+    pids_limit: 1024
+    healthcheck:
+      test: ["CMD", "dockermanger-healthcheck"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    ports:
+      - "5001:80/tcp"
+      - "5443:443/tcp"
+    environment:
+      TZ: "America/Chicago"
+      STACKS_DIR: "/opt/stacks"
+      DOCKERMANGER_HTTPS_PORT: "5443"
+      DOCKERMANGER_ENABLE_CONSOLE: "true"
+      DOCKERMANGER_TERMINAL_TYPE: "xterm-256color"
+      DOCKERMANGER_CONSOLE_DEFAULT_TARGET: "local"
+      DOCKERMANGER_HOST_SHELL_ENABLED: "false"
+      DOCKERMANGER_HOST_SSH_HOST: "host.docker.internal"
+      DOCKERMANGER_HOST_SSH_PORT: "22"
+      DOCKERMANGER_HOST_SSH_USER: "root"
+      DOCKERMANGER_HOST_SSH_KEY: ""
+      DOCKERMANGER_MIN_PASSWORD_LENGTH: "12"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+      - "/DATA/AppData/dockermanger:/data:rw"
+      - "/DATA/AppData/dockermanger/compose_stacks:/opt/stacks:rw"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "3"
+    x-casaos:
+      ports:
+        - container: "80"
+          description:
+            en_US: "HTTP redirect and health endpoint; host 5001 by default"
+        - container: "443"
+          description:
+            en_US: "HTTPS management interface; host 5443 by default. Keep DOCKERMANGER_HTTPS_PORT in sync when changing host port."
+      volumes:
+        - container: "/var/run/docker.sock"
+          description:
+            en_US: "Host Docker control socket; effectively grants host administrator privileges."
+        - container: "/data"
+          description:
+            en_US: "Persistent login, TLS certificates and SSH client data."
+        - container: "/opt/stacks"
+          description:
+            en_US: "Writable Docker Compose stack directory, separate from general /data."
+      envs:
+        - container: "TZ"
+          description:
+            en_US: "Application timezone"
+        - container: "STACKS_DIR"
+          description:
+            en_US: "Must match the stack bind mount target /opt/stacks"
+        - container: "DOCKERMANGER_HTTPS_PORT"
+          description:
+            en_US: "External HTTPS host port; change when changing host 5443 mapping"
+        - container: "DOCKERMANGER_ENABLE_CONSOLE"
+          description:
+            en_US: "Enable browser terminal subsystem"
+        - container: "DOCKERMANGER_TERMINAL_TYPE"
+          description:
+            en_US: "Console terminal type"
+        - container: "DOCKERMANGER_CONSOLE_DEFAULT_TARGET"
+          description:
+            en_US: "Default console target, local runs inside the DockerManger container"
+        - container: "DOCKERMANGER_HOST_SHELL_ENABLED"
+          description:
+            en_US: "Optional SSH to Docker host; disabled by default"
+        - container: "DOCKERMANGER_HOST_SSH_HOST"
+          description:
+            en_US: "Optional target host for SSH client"
+        - container: "DOCKERMANGER_HOST_SSH_PORT"
+          description:
+            en_US: "Optional SSH server port"
+        - container: "DOCKERMANGER_HOST_SSH_USER"
+          description:
+            en_US: "Optional SSH account on host"
+        - container: "DOCKERMANGER_HOST_SSH_KEY"
+          description:
+            en_US: "Optional private key path inside container"
+        - container: "DOCKERMANGER_MIN_PASSWORD_LENGTH"
+          description:
+            en_US: "Minimum administrator password length, 8-128 (default 12)"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.dockermanger"
+  title:
+    en_US: "DockerManger"
+  description:
+    en_US: "Docker and Compose management WebUI with first-run administrator setup, stack editing, logs and consoles. Uses privileged host Docker socket access. Source: https://github.com/bmartino1/DockerManger"
+  tagline:
+    en_US: "Manage Docker containers and Compose stacks"
+  developer: "bmartino1"
+  version: "latest"
+  author: "bmartino1"
+  icon: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/netprobe.png"
+  category: "Utilities"
+  tips:
+    before_install:
+      en_US: "WARNING: Docker socket grants host-level Docker control. Keep on trusted LAN or VPN only; do not expose to internet. On first HTTPS visit create admin credentials; no default password. Persistent /data stores credentials and TLS. Details: https://github.com/bmartino1/DockerManger"
+  port_map: "5443"
+  scheme: https
+  index: /

@@ -14,14 +14,14 @@ services:
       SCAN_FOLDERS: "/scan"
       EXCLUDE_PATHS: ""
       LOG_HISTORY_LIMIT: "3"
+      TZ: "America/Chicago"
+      SKIP_FRESHCLAM: "false"
     logging:
       driver: "local"
       options:
         "max-size": "50m"
         "max-file": "3"
     pids_limit: 2048
-      TZ: "America/Chicago"
-      SKIP_FRESHCLAM: "false"
     x-casaos:
       envs:
         - container: "TZ"
