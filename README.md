@@ -1,5 +1,7 @@
 # bmartino1 CasaOS App Store
 
+[![Platform: CasaOS](https://img.shields.io/badge/Platform-CasaOS-2B80FF?logo=docker&logoColor=white)](https://casaos.zimaspace.com/)
+
 > **Unofficial community-maintained third-party CasaOS App Store.** This independent source follows [CasaOS's guide to creating a custom AppStore](https://awesome.casaos.io/content/3rd-party-app-stores/create-your-first-custom-appstore.html). It is **not affiliated with, sponsored by, or endorsed by CasaOS or IceWhaleTech**. This is not a fork of the official App Store.
 
 CasaOS-compatible Docker Compose definitions adapted from the [bmartino1 Unraid Docker templates](https://github.com/bmartino1/unraid-docker-templates). Each application links to its own project source for complete functionality, configurable settings, examples, and deployment details.
