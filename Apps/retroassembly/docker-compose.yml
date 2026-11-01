@@ -25,7 +25,7 @@ x-casaos:
   title:
     en_US: "RetroAssembly"
   description:
-    en_US: "Play retro classic games through a web browser, with persistent ROMs, game data and save states."
+    en_US: "Play retro classic games through a web browser, with persistent ROMs, game data and save states. Project source: https://github.com/arianrhodsandlot/retroassembly"
   tagline:
     en_US: "Browser-based retro gaming"
   developer: "arianrhodsandlot"
@@ -36,7 +36,7 @@ x-casaos:
   category: "Media"
   tips:
     before_install:
-      en_US: "Mount /app/data persistently; provide games and ROMs only when you have the right to use them."
+      en_US: "Mount /app/data persistently; provide games and ROMs only when you have the right to use them. Source and full configuration documentation: https://github.com/arianrhodsandlot/retroassembly"
   port_map: "8000"
   scheme: http
   index: /

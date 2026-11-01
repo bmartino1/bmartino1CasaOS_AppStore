@@ -19,8 +19,20 @@ services:
       ALLOW_PLEX_KILL: "true"
       DBREPAIR_TIMEOUT: "7200"
       STOP_TIMEOUT: "90"
+      LOG_DIR: "/logs"
+      RESTART_FALLBACK: "true"
+      RESTORE_LAST_BACKUP: "false"
     x-casaos:
       envs:
+        - container: "LOG_DIR"
+          description:
+            en_US: "Persistent log directory inside the maintenance container."
+        - container: "RESTART_FALLBACK"
+          description:
+            en_US: "Allow docker start if target container exits during cleanup; not an offline repair mode."
+        - container: "RESTORE_LAST_BACKUP"
+          description:
+            en_US: "Unsupported: true aborts deliberately. Restore backups manually."
         - container: "DBREPAIR_MODE"
           description:
             en_US: "Environment setting: DBREPAIR_MODE"
@@ -70,7 +82,7 @@ x-casaos:
   title:
     en_US: "PlexDBRepair"
   description:
-    en_US: "One-shot Plex database maintenance tool. Finds a running Plex container through Docker socket, operates on its database and logs results. Requires verified Plex backups."
+    en_US: "One-shot Plex database maintenance tool. Finds a running Plex container through Docker socket, operates on its database and logs results. Requires verified Plex backups. Project source: https://github.com/bmartino1/plex-dbrepair-docker"
   tagline:
     en_US: "Plex database checks and repair"
   developer: "bmartino1"
@@ -81,4 +93,4 @@ x-casaos:
   category: "Media"
   tips:
     before_install:
-      en_US: "HIGH PRIVILEGE: /var/run/docker.sock grants host-level Docker control. Modifies Plex databases; maintain verified backups. May leave Plex stopped if repair fails. One-shot, restart disabled. LinuxServer Plex tested; other images not verified."
+      en_US: "HIGH PRIVILEGE: /var/run/docker.sock grants host-level Docker control. Modifies Plex databases; maintain verified backups. May leave Plex stopped if repair fails. One-shot, restart disabled. LinuxServer Plex tested; other images not verified. Source and full configuration documentation: https://github.com/bmartino1/plex-dbrepair-docker"

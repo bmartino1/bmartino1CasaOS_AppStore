@@ -19,8 +19,17 @@ services:
       options:
         "max-size": "50m"
         "max-file": "3"
+    pids_limit: 2048
+      TZ: "America/Chicago"
+      SKIP_FRESHCLAM: "false"
     x-casaos:
       envs:
+        - container: "TZ"
+          description:
+            en_US: "Timezone used in ClamAV logs."
+        - container: "SKIP_FRESHCLAM"
+          description:
+            en_US: "Advanced: skip virus-signature refresh. Leave false for normal scans."
         - container: "PUID"
           description:
             en_US: "Environment setting: PUID"
@@ -58,7 +67,7 @@ x-casaos:
   title:
     en_US: "ClamAV-clamdscan"
   description:
-    en_US: "One-shot ClamAV filesystem scanner. Updates signatures, scans the read-only /scan mount, saves logs and exits. Run again manually for another scan."
+    en_US: "One-shot ClamAV filesystem scanner. Updates signatures, scans the read-only /scan mount, saves logs and exits. Run again manually for another scan. Project source: https://github.com/bmartino1/clamav-alpine"
   tagline:
     en_US: "On-demand read-only malware scanning"
   developer: "bmartino1"
@@ -69,4 +78,4 @@ x-casaos:
   category: "Others"
   tips:
     before_install:
-      en_US: "Expected behavior: container stops after scan completes. Review Docker logs or /DATA/AppData/clamdscan/log. Set EXCLUDE_PATHS for any paths you do not want scanned."
+      en_US: "Expected behavior: container stops after scan completes. Review Docker logs or /DATA/AppData/clamdscan/log. Set EXCLUDE_PATHS for any paths you do not want scanned. Source and full configuration documentation: https://github.com/bmartino1/clamav-alpine"

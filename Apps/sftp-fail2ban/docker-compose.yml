@@ -14,7 +14,7 @@ services:
       - "/DATA/AppData/sftp-fail2ban:/config:rw"
     environment:
       TZ: "America/Chicago"
-      AUTO_UPDATE: "true"
+      AUTO_UPDATE: "suite"
       LOG_STREAMS: "auth,fail2ban"
       ADMIN_PASS: ""
       PUID: "0"
@@ -24,8 +24,45 @@ services:
       TAIL_LOGS: "true"
       CLEAR_LOGS: "false"
       F2B_CONFIG_MODE: "symlink"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+      AUTO_UPDATE_INTERVAL_HOURS: "0"
+      DEFAULT_ADMIN: "true"
+      SFTP_USERS: ""
+      PASSWORD_AUTH: "yes"
+      ALLOW_USERS: ""
+      DISABLE_IMKLOG: "true"
+      MODE: "start"
+      MAIL_SERVER: "false"
     x-casaos:
       envs:
+        - container: "AUTO_UPDATE_INTERVAL_HOURS"
+          description:
+            en_US: "0 disables timed package updates; 24 checks approximately daily. Restart after OpenSSH upgrade."
+        - container: "DEFAULT_ADMIN"
+          description:
+            en_US: "Set false to manage users.conf without environment synchronization."
+        - container: "SFTP_USERS"
+          description:
+            en_US: "Optional user entries, see upstream README users.conf format; protect credentials."
+        - container: "PASSWORD_AUTH"
+          description:
+            en_US: "Set no to require SSH keys configured beforehand."
+        - container: "ALLOW_USERS"
+          description:
+            en_US: "Optional space-separated SSH username allowlist."
+        - container: "DISABLE_IMKLOG"
+          description:
+            en_US: "Disable rsyslog imklog in containers."
+        - container: "MODE"
+          description:
+            en_US: "start launches service; seed prepares configuration then exits."
+        - container: "MAIL_SERVER"
+          description:
+            en_US: "Advanced: permit mail actions if configured."
         - container: "TZ"
           description:
             en_US: "Environment setting: TZ"
@@ -79,7 +116,7 @@ x-casaos:
   title:
     en_US: "SFTP-Fail2ban"
   description:
-    en_US: "OpenSSH SFTP server with Fail2ban. Change the shared host path and match the container path user to ADMIN_USER/users.conf. Set a unique ADMIN_PASS before starting."
+    en_US: "OpenSSH SFTP server with Fail2ban. Change the shared host path and match the container path user to ADMIN_USER/users.conf. Set a unique ADMIN_PASS before starting. Project source: https://github.com/bmartino1/sftp-debian"
   tagline:
     en_US: "SFTP access with brute-force protection"
   developer: "bmartino1"
@@ -90,4 +127,4 @@ x-casaos:
   category: "Networking"
   tips:
     before_install:
-      en_US: "No WebUI. Connect using an SFTP client on port 2222 by default. Change ADMIN_PASS and verify shared folder permissions and ADMIN_USER path before exposing the port."
+      en_US: "No WebUI. Connect using an SFTP client on port 2222 by default. Change ADMIN_PASS and verify shared folder permissions and ADMIN_USER path before exposing the port. Source and full configuration documentation: https://github.com/bmartino1/sftp-debian"

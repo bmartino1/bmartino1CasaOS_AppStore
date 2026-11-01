@@ -3,6 +3,7 @@ services:
   app:
     image: "bmmbmm01/netprobe:latest"
     restart: "unless-stopped"
+    init: true
     cap_add:
       - "NET_RAW"
     ports:
@@ -12,7 +13,7 @@ services:
       - "/DATA/AppData/netprobe:/config:rw"
     environment:
       APP_TIMEZONE: "UTC"
-      SPEEDTEST_BACKEND: "ookla"
+      SPEEDTEST_BACKEND: "python"
       SPEEDTEST_OOKLA_ACCEPT_LICENSE: ""
       SPEEDTEST_ENABLED: "true"
       NETPROBE_MIN_PASSWORD_LENGTH: "8"
@@ -22,8 +23,60 @@ services:
       POSTGRES_DB: "netprobe"
       POSTGRES_USER: "netprobe"
       POSTGRES_PASSWORD: ""
+      NETPROBE_CONFIG_DIR: "/config"
+      DB_PATH: "/config/data/netprobe.sqlite"
+      NETPROBE_AUTOSTART_CONFIGURED: "false"
+      PROBE_INTERVAL: "30"
+      PING_COUNT: "4"
+      SITES: "fast.com,google.com,youtube.com,amazon.com"
+      DNS_TEST_SITE: "google.com"
+      SPEEDTEST_INTERVAL: "14400"
+      ROUTER_IP: ""
+      WEIGHT_LOSS: "0.6"
+      WEIGHT_LATENCY: "0.15"
+      WEIGHT_JITTER: "0.2"
+      WEIGHT_DNS_LATENCY: "0.05"
     x-casaos:
       envs:
+        - container: "NETPROBE_CONFIG_DIR"
+          description:
+            en_US: "NetProbe persistent config directory."
+        - container: "DB_PATH"
+          description:
+            en_US: "SQLite file path within persistent /config."
+        - container: "NETPROBE_AUTOSTART_CONFIGURED"
+          description:
+            en_US: "Advanced: unattended first-run; keep false for interactive setup."
+        - container: "PROBE_INTERVAL"
+          description:
+            en_US: "Initial monitoring probe interval in seconds (first boot seed)."
+        - container: "PING_COUNT"
+          description:
+            en_US: "Initial number of pings per target."
+        - container: "SITES"
+          description:
+            en_US: "Initial comma-separated monitoring targets."
+        - container: "DNS_TEST_SITE"
+          description:
+            en_US: "Initial DNS test host."
+        - container: "SPEEDTEST_INTERVAL"
+          description:
+            en_US: "Initial speedtest interval seconds."
+        - container: "ROUTER_IP"
+          description:
+            en_US: "Optional LAN router IP used in monitoring."
+        - container: "WEIGHT_LOSS"
+          description:
+            en_US: "Initial health-score packet-loss weight."
+        - container: "WEIGHT_LATENCY"
+          description:
+            en_US: "Initial health-score latency weight."
+        - container: "WEIGHT_JITTER"
+          description:
+            en_US: "Initial health-score jitter weight."
+        - container: "WEIGHT_DNS_LATENCY"
+          description:
+            en_US: "Initial health-score DNS latency weight. Weights should sum to 1."
         - container: "APP_TIMEZONE"
           description:
             en_US: "Environment setting: APP_TIMEZONE"
@@ -77,7 +130,7 @@ x-casaos:
   title:
     en_US: "NetProbe"
   description:
-    en_US: "Internet quality monitoring dashboard for latency, packet loss, DNS and bandwidth. First-run setup creates an administrator; TLS uses a self-signed certificate by default. Optional Ookla CLI is not bundled."
+    en_US: "Internet quality monitoring dashboard for latency, packet loss, DNS and bandwidth. First-run setup creates an administrator; TLS uses a self-signed certificate by default. Optional Ookla CLI is not bundled. Project source: https://github.com/bmartino1/NetProbe_Python"
   tagline:
     en_US: "Monitor internet quality and connectivity"
   developer: "bmartino1"
@@ -88,7 +141,7 @@ x-casaos:
   category: "Networking"
   tips:
     before_install:
-      en_US: "Saved WebUI settings override initial environment values. HTTPS uses a self-signed certificate until replaced. Ookla CLI requires manual installation and acceptance of its terms."
+      en_US: "Saved WebUI settings override initial environment values. HTTPS uses a self-signed certificate until replaced. Ookla CLI requires manual installation and acceptance of its terms. Source and full configuration documentation: https://github.com/bmartino1/NetProbe_Python"
   port_map: "8443"
   scheme: https
   index: /
