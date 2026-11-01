@@ -81,10 +81,11 @@ x-casaos:
   tagline:
     en_US: "Monitor internet quality and connectivity"
   developer: "bmartino1"
+  version: "latest"
   author: "bmartino1"
   icon: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/netprobe.png"
   thumbnail: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/netprobe.png"
-  category: "Utilities"
+  category: "Networking"
   tips:
     before_install:
       en_US: "Saved WebUI settings override initial environment values. HTTPS uses a self-signed certificate until replaced. Ookla CLI requires manual installation and acceptance of its terms."

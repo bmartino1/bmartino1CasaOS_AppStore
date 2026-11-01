@@ -74,10 +74,11 @@ x-casaos:
   tagline:
     en_US: "Plex database checks and repair"
   developer: "bmartino1"
+  version: "latest"
   author: "bmartino1"
   icon: "https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/plex-logo.png"
   thumbnail: "https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/plex-logo.png"
-  category: "Utilities"
+  category: "Media"
   tips:
     before_install:
       en_US: "HIGH PRIVILEGE: /var/run/docker.sock grants host-level Docker control. Modifies Plex databases; maintain verified backups. May leave Plex stopped if repair fails. One-shot, restart disabled. LinuxServer Plex tested; other images not verified."

@@ -29,10 +29,11 @@ x-casaos:
   tagline:
     en_US: "Browser-based retro gaming"
   developer: "arianrhodsandlot"
+  version: "latest"
   author: "bmartino1"
   icon: "https://raw.githubusercontent.com/arianrhodsandlot/retroassembly/main/public/assets/logo/logo-512x512.png"
   thumbnail: "https://raw.githubusercontent.com/arianrhodsandlot/retroassembly/main/public/assets/logo/logo-512x512.png"
-  category: "Entertainment"
+  category: "Media"
   tips:
     before_install:
       en_US: "Mount /app/data persistently; provide games and ROMs only when you have the right to use them."

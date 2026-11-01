@@ -27,7 +27,7 @@ Each app has a standalone `Apps/<slug>/docker-compose.yml` definition, including
 ## Important deployment notes
 
 - Host paths are CasaOS-style defaults under `/DATA`, **not** the Unraid `/mnt/user` paths. Adjust them in the CasaOS installation dialog.
-- SFTP-Fail2ban's `ADMIN_PASS` placeholder **must** be replaced with a unique password before first start; verify the username-specific share mount.
+- SFTP-Fail2ban's `ADMIN_PASS` is intentionally blank and **must** be set to a unique password before first start; verify the username-specific share mount.
 - ClamAV-clamdscan and PlexDBRepair are **one-shot containers** with restart policy `no`. A stopped container following a scan or maintenance run is expected.
 - PlexDBRepair mounts `/var/run/docker.sock` and therefore has **host-level Docker privileges**; verify backups and target before running.
 - NetProbe uses HTTPS on 8443 with a self-signed certificate initially. Ookla CLI is not bundled and requires separate acceptance/install.
@@ -45,3 +45,9 @@ Each app has a standalone `Apps/<slug>/docker-compose.yml` definition, including
 
 Upstream template details: https://github.com/bmartino1/unraid-docker-templates/tree/main/templates
 
+
+## CasaOS compatibility
+
+This source tree follows the GitHub ZIP import method documented at https://awesome.casaos.io/content/3rd-party-app-stores/create-your-first-custom-appstore.html. It also includes `store-config.json`, `supported-languages.json`, and stable top-level `x-casaos.id` metadata for newer store tooling. No pre-built v2 `dist/` or hosted `store.json` is published yet. Do not substitute a raw individual Compose URL for the ZIP source.
+
+For the SFTP app, set `ADMIN_PASS` in the installation configuration before deploying. For the one-shot apps, check the container logs for completion or errors rather than expecting a WebUI.

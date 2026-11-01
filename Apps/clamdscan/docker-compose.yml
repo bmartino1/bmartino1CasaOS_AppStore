@@ -62,10 +62,11 @@ x-casaos:
   tagline:
     en_US: "On-demand read-only malware scanning"
   developer: "bmartino1"
+  version: "latest"
   author: "bmartino1"
   icon: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/clamav.png"
   thumbnail: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/clamav.png"
-  category: "Utilities"
+  category: "Others"
   tips:
     before_install:
       en_US: "Expected behavior: container stops after scan completes. Review Docker logs or /DATA/AppData/clamdscan/log. Set EXCLUDE_PATHS for any paths you do not want scanned."

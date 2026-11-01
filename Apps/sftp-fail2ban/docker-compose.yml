@@ -16,7 +16,7 @@ services:
       TZ: "America/Chicago"
       AUTO_UPDATE: "true"
       LOG_STREAMS: "auth,fail2ban"
-      ADMIN_PASS: "CHANGE_ME_BEFORE_FIRST_START"
+      ADMIN_PASS: ""
       PUID: "0"
       PGID: "0"
       ADMIN_USER: "admin"
@@ -83,10 +83,11 @@ x-casaos:
   tagline:
     en_US: "SFTP access with brute-force protection"
   developer: "bmartino1"
+  version: "latest"
   author: "bmartino1"
   icon: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/SFTP.png"
   thumbnail: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/SFTP.png"
-  category: "Network"
+  category: "Networking"
   tips:
     before_install:
       en_US: "No WebUI. Connect using an SFTP client on port 2222 by default. Change ADMIN_PASS and verify shared folder permissions and ADMIN_USER path before exposing the port."

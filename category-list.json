@@ -1,17 +1,17 @@
 [
   {
-    "name": "Utilities",
-    "font": "",
-    "description": ""
+    "name": "Networking",
+    "font": "lan",
+    "description": "Network and connectivity apps"
   },
   {
-    "name": "Network",
-    "font": "",
-    "description": ""
+    "name": "Media",
+    "font": "play-circle-outline",
+    "description": "Media and entertainment apps"
   },
   {
-    "name": "Entertainment",
-    "font": "",
-    "description": ""
+    "name": "Others",
+    "font": "apps",
+    "description": "Utilities and maintenance apps"
   }
 ]
