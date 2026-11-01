@@ -42,6 +42,14 @@ RetroAssembly is an **upstream third-party project**, not maintained by bmartino
 
 **Bitcoin caution:** The requested `bmmbmm01/bitcoin-knots-gui` image is **marked archived** on Docker Hub. This is provided for compatibility rather than represented as a maintained, security-updated image. Web VNC is on port 5800 and wallet/blockchain files persist at `/config/.bitcoin`. Keep it off public networks and back up the wallet. The legacy `AUTOUPDATE` toggle may be necessary on initial installation; consult the Docker Hub image instructions.
 
+## Combined DNS stack
+
+| App | Sources | Description |
+| --- | --- | --- |
+| [DNSBlocker - AdGuard Home + Unbound](Apps/dnsblocker-adguardhome_Unbound/docker-compose.yml) | [AdGuard Home](https://github.com/AdguardTeam/AdGuardHome) + [Unbound Docker](https://github.com/MatthewVance/unbound-docker) | Two services managed as one CasaOS Compose app. See the [setup guide](Apps/dnsblocker-adguardhome_Unbound/README.md). |
+
+The portable default uses a private Docker bridge (AdGuard `172.30.53.3`, Unbound `172.30.53.2`) instead of requiring a pre-existing macvlan `br0`. The installer must select Unbound `172.30.53.2` as AdGuard's upstream during initial configuration; Compose cannot safely initialize the entire interactive AdGuard profile. Verify port 53 availability and that the internal subnet does not conflict before installation. No private LAN DNS rewrite records are imported by default.
+
 ## Configuration, paths, and safety
 
 - The example host paths use CasaOS-style `/DATA/AppData/<app>` rather than Unraid's `/mnt/user/appdata/<app>`. Adjust them for your host **before installation**, especially the scan target and SFTP shared directory.

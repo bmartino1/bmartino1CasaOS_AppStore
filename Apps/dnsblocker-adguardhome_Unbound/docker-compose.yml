@@ -1,0 +1,91 @@
+name: bmartino1-dnsblocker
+services:
+  unbound:
+    image: mvance/unbound:latest
+    restart: unless-stopped
+    init: true
+    networks:
+      dns_backend:
+        ipv4_address: 172.30.53.2
+    # Only the AdGuard service should expose DNS to the host.
+    # The image generates its own default configuration if not overridden.
+    # To supply your own config, create unbound.conf first and uncomment:
+    # volumes:
+    #   - /DATA/AppData/dnsblocker/unbound:/opt/unbound/etc/unbound:rw
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  adguardhome:
+    image: adguard/adguardhome:latest
+    restart: unless-stopped
+    depends_on:
+      unbound:
+        condition: service_started
+    networks:
+      dns_backend:
+        ipv4_address: 172.30.53.3
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "3000:3000/tcp"
+      - "8088:80/tcp"
+    volumes:
+      - "/DATA/AppData/dnsblocker/adguard/conf:/opt/adguardhome/conf:rw"
+      - "/DATA/AppData/dnsblocker/adguard/work:/opt/adguardhome/work:rw"
+    # This resolver is reachable by container IP; AdGuard itself must ALSO be
+    # configured during setup: Settings > DNS settings > Upstream DNS servers:
+    # 172.30.53.2
+    # Do not point fallback/bootstrap DNS to AdGuard itself.
+    x-casaos:
+      ports:
+        - container: "53"
+          description:
+            en_US: "DNS on host TCP and UDP 53; must be free"
+        - container: "3000"
+          description:
+            en_US: "First-run AdGuard wizard on host port 3000"
+        - container: "80"
+          description:
+            en_US: "AdGuard normal HTTP admin interface, host port 8088"
+      volumes:
+        - container: "/opt/adguardhome/conf"
+          description:
+            en_US: "Persistent AdGuard configuration and upstream DNS selections"
+        - container: "/opt/adguardhome/work"
+          description:
+            en_US: "Persistent logs, database and work files"
+
+networks:
+  dns_backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.53.0/24
+
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: adguardhome
+  id: "com.bmartino1.dnsblocker-adguardhome-unbound"
+  title:
+    en_US: "DNSBlocker - AdGuard Home + Unbound"
+  description:
+    en_US: "One Compose stack with AdGuard Home DNS filtering and an internal Unbound upstream resolver. No pre-created macvlan required. Configure upstream 172.30.53.2 in AdGuard on first setup. Projects: https://github.com/AdguardTeam/AdGuardHome and https://github.com/MatthewVance/unbound-docker"
+  tagline:
+    en_US: "DNS filtering and upstream resolution together"
+  developer: "AdGuard Team / Matthew Vance"
+  author: "bmartino1"
+  version: "latest"
+  icon: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/adguard-home.png"
+  thumbnail: "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/adguard-home.png"
+  category: "Networking"
+  tips:
+    before_install:
+      en_US: "Requires free host port 53 TCP/UDP and no overlapping Docker subnet 172.30.53.0/24. First open port 3000 for the AdGuard setup wizard, choose DNS port 53 and web port 80, then set Upstream DNS servers to 172.30.53.2. The Unbound image default forwards to Cloudflare over TLS (not true recursion). Back up /DATA/AppData/dnsblocker before changing DNS. This stack is a portable bridge-mode alternative to custom macvlan. Do not copy your personal 192.168.2.x host entries directly."
+  port_map: "3000"
+  scheme: http
+  index: /
