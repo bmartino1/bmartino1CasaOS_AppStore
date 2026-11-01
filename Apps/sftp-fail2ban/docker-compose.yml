@@ -1,0 +1,92 @@
+name: bmartino1-sftp-fail2ban
+services:
+  app:
+    image: "bmmbmm01/sftp2:latest"
+    restart: "unless-stopped"
+    hostname: "sftp"
+    cap_add:
+      - "NET_ADMIN"
+      - "NET_RAW"
+    ports:
+      - "2222:22/tcp"
+    volumes:
+      - "/DATA/AppData/sftp-fail2ban/share:/home/admin/sftp:rw"
+      - "/DATA/AppData/sftp-fail2ban:/config:rw"
+    environment:
+      TZ: "America/Chicago"
+      AUTO_UPDATE: "true"
+      LOG_STREAMS: "auth,fail2ban"
+      ADMIN_PASS: "CHANGE_ME_BEFORE_FIRST_START"
+      PUID: "0"
+      PGID: "0"
+      ADMIN_USER: "admin"
+      DEBUG_TESTING: "false"
+      TAIL_LOGS: "true"
+      CLEAR_LOGS: "false"
+      F2B_CONFIG_MODE: "symlink"
+    x-casaos:
+      envs:
+        - container: "TZ"
+          description:
+            en_US: "Environment setting: TZ"
+        - container: "AUTO_UPDATE"
+          description:
+            en_US: "true runs packaged updater, custom uses /config/updateapps.sh, false skips."
+        - container: "LOG_STREAMS"
+          description:
+            en_US: "Environment setting: LOG_STREAMS"
+        - container: "ADMIN_PASS"
+          description:
+            en_US: "REQUIRED: Set a unique password before first launch; CHANGE_ME_BEFORE_FIRST_START is a placeholder."
+        - container: "PUID"
+          description:
+            en_US: "Environment setting: PUID"
+        - container: "PGID"
+          description:
+            en_US: "Environment setting: PGID"
+        - container: "ADMIN_USER"
+          description:
+            en_US: "Environment setting: ADMIN_USER"
+        - container: "DEBUG_TESTING"
+          description:
+            en_US: "Environment setting: DEBUG_TESTING"
+        - container: "TAIL_LOGS"
+          description:
+            en_US: "Environment setting: TAIL_LOGS"
+        - container: "CLEAR_LOGS"
+          description:
+            en_US: "Environment setting: CLEAR_LOGS"
+        - container: "F2B_CONFIG_MODE"
+          description:
+            en_US: "symlink, overlay, noclobber or replace."
+      ports:
+        - container: "22"
+          description:
+            en_US: "External SFTP/SSH port"
+      volumes:
+        - container: "/home/admin/sftp"
+          description:
+            en_US: "Example shared folder; adjust admin username/path as needed"
+        - container: "/config"
+          description:
+            en_US: "SSH host keys, users, Fail2ban settings and logs"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.sftp-fail2ban"
+  title:
+    en_US: "SFTP-Fail2ban"
+  description:
+    en_US: "OpenSSH SFTP server with Fail2ban. Change the shared host path and match the container path user to ADMIN_USER/users.conf. Set a unique ADMIN_PASS before starting."
+  tagline:
+    en_US: "SFTP access with brute-force protection"
+  developer: "bmartino1"
+  author: "bmartino1"
+  icon: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/SFTP.png"
+  thumbnail: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/SFTP.png"
+  category: "Network"
+  tips:
+    before_install:
+      en_US: "No WebUI. Connect using an SFTP client on port 2222 by default. Change ADMIN_PASS and verify shared folder permissions and ADMIN_USER path before exposing the port."

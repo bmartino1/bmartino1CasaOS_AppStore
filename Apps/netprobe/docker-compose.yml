@@ -1,0 +1,93 @@
+name: bmartino1-netprobe
+services:
+  app:
+    image: "bmmbmm01/netprobe:latest"
+    restart: "unless-stopped"
+    cap_add:
+      - "NET_RAW"
+    ports:
+      - "8443:8443/tcp"
+      - "8080:80/tcp"
+    volumes:
+      - "/DATA/AppData/netprobe:/config:rw"
+    environment:
+      APP_TIMEZONE: "UTC"
+      SPEEDTEST_BACKEND: "ookla"
+      SPEEDTEST_OOKLA_ACCEPT_LICENSE: ""
+      SPEEDTEST_ENABLED: "true"
+      NETPROBE_MIN_PASSWORD_LENGTH: "8"
+      DB_ENGINE: "sqlite"
+      POSTGRES_HOST: ""
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: "netprobe"
+      POSTGRES_USER: "netprobe"
+      POSTGRES_PASSWORD: ""
+    x-casaos:
+      envs:
+        - container: "APP_TIMEZONE"
+          description:
+            en_US: "Environment setting: APP_TIMEZONE"
+        - container: "SPEEDTEST_BACKEND"
+          description:
+            en_US: "Environment setting: SPEEDTEST_BACKEND"
+        - container: "SPEEDTEST_OOKLA_ACCEPT_LICENSE"
+          description:
+            en_US: "Leave blank for WebUI acknowledgement; I_ACCEPT only after personally accepting Ookla terms. Does not install CLI."
+        - container: "SPEEDTEST_ENABLED"
+          description:
+            en_US: "Environment setting: SPEEDTEST_ENABLED"
+        - container: "NETPROBE_MIN_PASSWORD_LENGTH"
+          description:
+            en_US: "Environment setting: NETPROBE_MIN_PASSWORD_LENGTH"
+        - container: "DB_ENGINE"
+          description:
+            en_US: "sqlite or postgres; changing database does not migrate existing data."
+        - container: "POSTGRES_HOST"
+          description:
+            en_US: "Environment setting: POSTGRES_HOST"
+        - container: "POSTGRES_PORT"
+          description:
+            en_US: "Environment setting: POSTGRES_PORT"
+        - container: "POSTGRES_DB"
+          description:
+            en_US: "Environment setting: POSTGRES_DB"
+        - container: "POSTGRES_USER"
+          description:
+            en_US: "Environment setting: POSTGRES_USER"
+        - container: "POSTGRES_PASSWORD"
+          description:
+            en_US: "External PostgreSQL password (optional, no default)."
+      ports:
+        - container: "8443"
+          description:
+            en_US: "HTTPS dashboard"
+        - container: "80"
+          description:
+            en_US: "Optional HTTP redirect"
+      volumes:
+        - container: "/config"
+          description:
+            en_US: "Configuration, TLS and monitoring history"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.netprobe"
+  title:
+    en_US: "NetProbe"
+  description:
+    en_US: "Internet quality monitoring dashboard for latency, packet loss, DNS and bandwidth. First-run setup creates an administrator; TLS uses a self-signed certificate by default. Optional Ookla CLI is not bundled."
+  tagline:
+    en_US: "Monitor internet quality and connectivity"
+  developer: "bmartino1"
+  author: "bmartino1"
+  icon: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/netprobe.png"
+  thumbnail: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/netprobe.png"
+  category: "Utilities"
+  tips:
+    before_install:
+      en_US: "Saved WebUI settings override initial environment values. HTTPS uses a self-signed certificate until replaced. Ookla CLI requires manual installation and acceptance of its terms."
+  port_map: "8443"
+  scheme: https
+  index: /

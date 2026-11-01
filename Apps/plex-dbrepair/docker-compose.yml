@@ -1,0 +1,83 @@
+name: bmartino1-plex-dbrepair
+services:
+  app:
+    image: "bmmbmm01/plex-dbrepair"
+    restart: "no"
+    hostname: "dbrepair"
+    volumes:
+      - "/DATA/AppData/plex-dbrepair-logs:/logs:rw"
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+    environment:
+      DBREPAIR_MODE: "automatic"
+      PLEX_CONTAINER_NAME: "auto"
+      ENABLE_BACKUPS: "true"
+      RESTART_PLEX: "true"
+      PRUNE_DAYS: "30"
+      PLEX_CONTAINER_MATCH: "plex"
+      PLEX_MOUNT: "/config"
+      PLEX_REL: "Library/Application Support/Plex Media Server"
+      ALLOW_PLEX_KILL: "true"
+      DBREPAIR_TIMEOUT: "7200"
+      STOP_TIMEOUT: "90"
+    x-casaos:
+      envs:
+        - container: "DBREPAIR_MODE"
+          description:
+            en_US: "Environment setting: DBREPAIR_MODE"
+        - container: "PLEX_CONTAINER_NAME"
+          description:
+            en_US: "Environment setting: PLEX_CONTAINER_NAME"
+        - container: "ENABLE_BACKUPS"
+          description:
+            en_US: "Environment setting: ENABLE_BACKUPS"
+        - container: "RESTART_PLEX"
+          description:
+            en_US: "Environment setting: RESTART_PLEX"
+        - container: "PRUNE_DAYS"
+          description:
+            en_US: "Environment setting: PRUNE_DAYS"
+        - container: "PLEX_CONTAINER_MATCH"
+          description:
+            en_US: "Environment setting: PLEX_CONTAINER_MATCH"
+        - container: "PLEX_MOUNT"
+          description:
+            en_US: "Environment setting: PLEX_MOUNT"
+        - container: "PLEX_REL"
+          description:
+            en_US: "Environment setting: PLEX_REL"
+        - container: "ALLOW_PLEX_KILL"
+          description:
+            en_US: "Environment setting: ALLOW_PLEX_KILL"
+        - container: "DBREPAIR_TIMEOUT"
+          description:
+            en_US: "Environment setting: DBREPAIR_TIMEOUT"
+        - container: "STOP_TIMEOUT"
+          description:
+            en_US: "Environment setting: STOP_TIMEOUT"
+      volumes:
+        - container: "/logs"
+          description:
+            en_US: "Persistent repair logs"
+        - container: "/var/run/docker.sock"
+          description:
+            en_US: "Docker host control socket: grants host-level privileges"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.plex-dbrepair"
+  title:
+    en_US: "PlexDBRepair"
+  description:
+    en_US: "One-shot Plex database maintenance tool. Finds a running Plex container through Docker socket, operates on its database and logs results. Requires verified Plex backups."
+  tagline:
+    en_US: "Plex database checks and repair"
+  developer: "bmartino1"
+  author: "bmartino1"
+  icon: "https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/plex-logo.png"
+  thumbnail: "https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/plex-logo.png"
+  category: "Utilities"
+  tips:
+    before_install:
+      en_US: "HIGH PRIVILEGE: /var/run/docker.sock grants host-level Docker control. Modifies Plex databases; maintain verified backups. May leave Plex stopped if repair fails. One-shot, restart disabled. LinuxServer Plex tested; other images not verified."

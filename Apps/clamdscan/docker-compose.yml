@@ -1,0 +1,71 @@
+name: bmartino1-clamdscan
+services:
+  app:
+    image: "bmmbmm01/clamav-alpine:latest"
+    restart: "no"
+    volumes:
+      - "/DATA/Media:/scan:ro"
+      - "/DATA/AppData/clamdscan/db:/var/lib/clamav:rw"
+      - "/DATA/AppData/clamdscan/etc:/etc/clamav:rw"
+      - "/DATA/AppData/clamdscan/log:/var/log/clamav:rw"
+    environment:
+      PUID: "0"
+      PGID: "0"
+      SCAN_FOLDERS: "/scan"
+      EXCLUDE_PATHS: ""
+      LOG_HISTORY_LIMIT: "3"
+    logging:
+      driver: "local"
+      options:
+        "max-size": "50m"
+        "max-file": "3"
+    x-casaos:
+      envs:
+        - container: "PUID"
+          description:
+            en_US: "Environment setting: PUID"
+        - container: "PGID"
+          description:
+            en_US: "Environment setting: PGID"
+        - container: "SCAN_FOLDERS"
+          description:
+            en_US: "Environment setting: SCAN_FOLDERS"
+        - container: "EXCLUDE_PATHS"
+          description:
+            en_US: "Environment setting: EXCLUDE_PATHS"
+        - container: "LOG_HISTORY_LIMIT"
+          description:
+            en_US: "Environment setting: LOG_HISTORY_LIMIT"
+      volumes:
+        - container: "/scan"
+          description:
+            en_US: "Host folder to scan, read-only"
+        - container: "/var/lib/clamav"
+          description:
+            en_US: "Signature database"
+        - container: "/etc/clamav"
+          description:
+            en_US: "Editable ClamAV settings"
+        - container: "/var/log/clamav"
+          description:
+            en_US: "Scan log history"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.clamdscan"
+  title:
+    en_US: "ClamAV-clamdscan"
+  description:
+    en_US: "One-shot ClamAV filesystem scanner. Updates signatures, scans the read-only /scan mount, saves logs and exits. Run again manually for another scan."
+  tagline:
+    en_US: "On-demand read-only malware scanning"
+  developer: "bmartino1"
+  author: "bmartino1"
+  icon: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/clamav.png"
+  thumbnail: "https://raw.githubusercontent.com/bmartino1/unraid-docker-templates/main/images/clamav.png"
+  category: "Utilities"
+  tips:
+    before_install:
+      en_US: "Expected behavior: container stops after scan completes. Review Docker logs or /DATA/AppData/clamdscan/log. Set EXCLUDE_PATHS for any paths you do not want scanned."

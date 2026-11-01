@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "store_id": "com.bmartino1.casaos",
+  "name": {
+    "en_US": "bmartino1 CasaOS App Store"
+  },
+  "description": {
+    "en_US": "CasaOS third-party Docker app store based on bmartino1 Unraid templates."
+  },
+  "maintainer": "bmartino1",
+  "url": "https://github.com/bmartino1/bmartino1CasaOS_AppStore"
+}

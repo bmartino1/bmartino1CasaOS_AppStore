@@ -1,0 +1,41 @@
+name: bmartino1-retroassembly
+services:
+  app:
+    image: "arianrhodsandlot/retroassembly"
+    restart: "unless-stopped"
+    ports:
+      - "8000:8000/tcp"
+    volumes:
+      - "/DATA/AppData/retroassembly:/app/data:rw"
+    x-casaos:
+      ports:
+        - container: "8000"
+          description:
+            en_US: "RetroAssembly browser port"
+      volumes:
+        - container: "/app/data"
+          description:
+            en_US: "ROMs, game data and saves"
+x-casaos:
+  architectures:
+    - amd64
+    - arm64
+  main: app
+  id: "com.bmartino1.retroassembly"
+  title:
+    en_US: "RetroAssembly"
+  description:
+    en_US: "Play retro classic games through a web browser, with persistent ROMs, game data and save states."
+  tagline:
+    en_US: "Browser-based retro gaming"
+  developer: "arianrhodsandlot"
+  author: "bmartino1"
+  icon: "https://raw.githubusercontent.com/arianrhodsandlot/retroassembly/main/public/assets/logo/logo-512x512.png"
+  thumbnail: "https://raw.githubusercontent.com/arianrhodsandlot/retroassembly/main/public/assets/logo/logo-512x512.png"
+  category: "Entertainment"
+  tips:
+    before_install:
+      en_US: "Mount /app/data persistently; provide games and ROMs only when you have the right to use them."
+  port_map: "8000"
+  scheme: http
+  index: /
